@@ -1,13 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  FaExclamationTriangle, FaClipboardList, FaHeartbeat, FaUserMd, 
+import {
+  FaExclamationTriangle, FaHeartbeat, FaUserMd, 
   FaShieldAlt, FaChartLine, FaPills, FaInfoCircle, FaClock, 
   FaChevronDown, FaChevronUp, FaStethoscope, FaCalendarAlt,
   FaUtensils, FaRunning, FaExclamationCircle, FaCheckCircle,
-  FaHospital, FaFileMedical, FaFlask, FaLungs, FaBrain,
-  FaKidney, FaAllergies, FaHistory, FaWeight, FaEye,
-  FaDownload, FaFilePdf
+  FaFileMedical, FaFlask, FaBrain, FaDownload, FaFilePdf
 } from 'react-icons/fa';
 import { MedicationReportData } from '../types/types';
 import '../styles/MedicationReport.css';

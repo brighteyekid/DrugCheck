@@ -245,4 +245,13 @@ function defaultAIAnalysis() {
     suggestedMonitoring: ['Regular check-ups with your healthcare provider'],
     lifestyleRecommendations: ['Follow prescribed medication schedule', 'Report any unusual symptoms']
   };
-} 
+}
+
+// Update the InteractionResult type
+const interactionResult: Interaction = {
+  aiGenerated: true,
+  severity: 'Unknown', // Ensure severity matches the Interaction type
+  description: 'AI-generated interaction analysis',
+  recommendation: 'Consult your healthcare provider',
+  confidence: 0.9,
+}; 

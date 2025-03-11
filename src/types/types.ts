@@ -14,7 +14,7 @@ export interface Drug {
 }
 
 export interface Interaction {
-  severity: 'High' | 'Moderate' | 'Low' | 'Unknown';
+  severity: 'High' | 'Moderate' | 'Low' | 'Unknown' | 'Contraindicated' | 'Severe' | 'Minor';
   description: string;
   recommendation: string;
   mechanism?: string;
