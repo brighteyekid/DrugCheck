@@ -1,0 +1,121 @@
+.error-boundary {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--background-color);
+  padding: 2rem;
+}
+
+.error-container {
+  background: var(--card-bg);
+  padding: 3rem;
+  border-radius: 20px;
+  text-align: center;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-color);
+}
+
+.error-icon-container {
+  margin-bottom: 2rem;
+}
+
+.error-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.error-icon.network { color: #3b82f6; }
+.error-icon.database { color: #8b5cf6; }
+.error-icon.syntax { color: #ec4899; }
+.error-icon.server { color: #f43f5e; }
+.error-icon.bug { color: #f59e0b; }
+.error-icon.auth { color: #10b981; }
+.error-icon.generic { color: #6366f1; }
+
+.error-details {
+  margin: 2rem 0;
+  color: var(--text-muted);
+}
+
+.error-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.error-actions button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.retry-button {
+  background: var(--primary-color);
+  color: white;
+}
+
+.home-button {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--primary-color);
+}
+
+.button-icon {
+  font-size: 1.2rem;
+}
+
+.dev-error-details {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  text-align: left;
+  overflow: auto;
+}
+
+.dev-icon {
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.dev-error-details pre {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+@media (max-width: 768px) {
+  .error-container {
+    padding: 2rem;
+  }
+
+  .error-icon {
+    font-size: 3rem;
+  }
+
+  .error-actions {
+    flex-direction: column;
+  }
+}
+
+/* Animation keyframes */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.error-icon-container {
+  animation: float 3s ease-in-out infinite;
+}

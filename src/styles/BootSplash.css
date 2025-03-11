@@ -1,0 +1,331 @@
+.boot-splash {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #0a0f1e 0%, #1a2234 100%);
+    z-index: 9999;
+    overflow: hidden;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+  
+  /* Glowing orbs */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+  }
+  
+  .orb-1 {
+    width: 40vw;
+    height: 40vw;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(244, 63, 94, 0.05) 70%);
+    top: -10vh;
+    right: -5vw;
+  }
+  
+  .orb-2 {
+    width: 50vw;
+    height: 50vw;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.07) 0%, rgba(129, 140, 248, 0.03) 60%);
+    bottom: -20vh;
+    left: -10vw;
+  }
+  
+  /* Floating particles */
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
+    filter: blur(1px);
+  }
+  
+  .splash-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    background: rgba(15, 23, 42, 0.3);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 
+      0 25px 50px -12px rgba(0, 0, 0, 0.25),
+      0 0 30px rgba(99, 102, 241, 0.1);
+    width: 380px;
+    max-width: 90vw;
+  }
+  
+  .logo-container {
+    position: relative;
+    margin-bottom: 2.5rem;
+    width: 150px;
+    height: 150px;
+  }
+  
+  .logo-circle {
+    position: absolute;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(15, 23, 42, 0.6);
+    box-shadow: 
+      0 0 0 1px rgba(255, 255, 255, 0.05),
+      0 0 30px rgba(99, 102, 241, 0.15);
+    z-index: 1;
+  }
+  
+  .logo-icons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .icon-wrapper {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+  
+  .logo-icon {
+    filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.5));
+  }
+  
+  .logo-icon.pills {
+    font-size: 3.5rem;
+    color: #818cf8;
+    z-index: 5;
+  }
+  
+  .logo-icon.shield {
+    font-size: 5rem;
+    color: #6366f1;
+    opacity: 0.85;
+    z-index: 3;
+  }
+  
+  .shield-wrapper {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .logo-icon.heartbeat {
+    font-size: 2.2rem;
+    color: #f43f5e;
+    z-index: 4;
+    top: 70%;
+    left: 70%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .logo-icon.flask {
+    font-size: 2.5rem;
+    color: #a5b4fc;
+    z-index: 4;
+  }
+  
+  .flask-wrapper {
+    top: 35%;
+    left: 70%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .logo-icon.stethoscope {
+    font-size: 2.2rem;
+    color: #93c5fd;
+    z-index: 4;
+  }
+  
+  .stethoscope-wrapper {
+    top: 65%;
+    left: 30%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .app-title {
+    font-size: 3.6rem;
+    font-weight: 800;
+    margin: 0;
+    color: #fff;
+    text-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+    letter-spacing: -1px;
+    position: relative;
+  }
+  
+  .text-gradient {
+    background: linear-gradient(135deg, #6366f1 0%, #818cf8 50%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+  }
+  
+  .app-title::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(90deg, #6366f1, #f43f5e);
+    border-radius: 10px;
+  }
+  
+  .app-tagline {
+    font-size: 1.15rem;
+    color: #cbd5e1;
+    margin: 1.5rem 0 2.5rem;
+    font-weight: 400;
+  }
+  
+  .progress-container {
+    position: relative;
+    width: 280px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1.2rem;
+    box-shadow: 
+      inset 0 1px 3px rgba(0, 0, 0, 0.2),
+      0 0 10px rgba(99, 102, 241, 0.1);
+  }
+  
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #6366f1, #818cf8, #f43f5e);
+    border-radius: 10px;
+    background-size: 200% 100%;
+    animation: gradientShift 3s linear infinite;
+  }
+  
+  .progress-glow {
+    position: absolute;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    border-radius: 10px;
+    animation: progressGlow 2s linear infinite;
+  }
+  
+  .loading-text-container {
+    height: 24px;
+    position: relative;
+    margin-bottom: 0.5rem;
+  }
+  
+  .loading-text, .ready-text {
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .loading-text {
+    color: #94a3b8;
+  }
+  
+  .ready-text {
+    color: #a5b4fc;
+    font-weight: 600;
+  }
+  
+  /* Animations */
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 200% 50%;
+    }
+  }
+  
+  @keyframes progressGlow {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+  
+  /* Media queries */
+  @media (max-width: 768px) {
+    .app-title {
+      font-size: 2.8rem;
+    }
+    
+    .logo-container {
+      width: 130px;
+      height: 130px;
+    }
+    
+    .logo-circle {
+      width: 110px;
+      height: 110px;
+    }
+    
+    .logo-icon.pills {
+      font-size: 3rem;
+    }
+    
+    .logo-icon.shield {
+      font-size: 4.2rem;
+    }
+    
+    .logo-icon.heartbeat {
+      font-size: 1.8rem;
+    }
+    
+    .logo-icon.flask {
+      font-size: 2rem;
+    }
+    
+    .logo-icon.stethoscope {
+      font-size: 1.8rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .splash-content {
+      padding: 1.5rem;
+      width: 320px;
+    }
+    
+    .app-title {
+      font-size: 2.5rem;
+    }
+    
+    .app-tagline {
+      font-size: 1rem;
+      margin: 1.2rem 0 2rem;
+    }
+    
+    .progress-container {
+      width: 240px;
+    }
+  }
