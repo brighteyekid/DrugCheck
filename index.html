@@ -1,21 +1,128 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="DrugCheck - Your medication safety companion. Check drug interactions and get comprehensive medication analysis." />
-    <meta name="theme-color" content="#0f172a" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    
+    <!-- Primary Meta Tags -->
     <title>DrugCheck | Medication Interaction Analyzer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Open Graph / Social Media Meta Tags -->
-    <meta property="og:title" content="DrugCheck | Medication Interaction Analyzer" />
-    <meta property="og:description" content="Check potential drug interactions and get detailed medication analysis with AI-powered insights." />
+    <meta name="title" content="DrugCheck | Medication Interaction Analyzer" />
+    <meta name="description" content="Check potential drug interactions and get comprehensive medication analysis with AI-powered insights. Your trusted medication safety companion." />
+    <meta name="keywords" content="drug interactions, medication safety, prescription checker, drug compatibility, medication analyzer, AI health" />
+    <meta name="author" content="DrugCheck" />
+    <meta name="theme-color" content="#0f172a" />
+    
+    <!-- Open Graph / Facebook Meta Tags -->
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://drug-check.vercel.app/" />
+    <meta property="og:title" content="DrugCheck | Medication Interaction Analyzer" />
+    <meta property="og:description" content="Check potential drug interactions and get detailed medication analysis with AI-powered insights. Your trusted medication safety companion." />
+    <meta property="og:image" content="https://drug-check.vercel.app/og-image.png" />
+    
+    <!-- Twitter Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://drug-check.vercel.app/" />
+    <meta name="twitter:title" content="DrugCheck | Medication Interaction Analyzer" />
+    <meta name="twitter:description" content="Check potential drug interactions and get detailed medication analysis with AI-powered insights." />
+    <meta name="twitter:image" content="https://drug-check.vercel.app/twitter-image.png" />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <!-- Favicon and App Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    
+    <!-- Additional Meta -->
+    <meta name="application-name" content="DrugCheck" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="DrugCheck" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    
+    <!-- Mr. Robot Easter Egg -->
+    <script>
+      // fsociety easter egg - inspired by Mr. Robot
+      console.log(`
+      ███████╗███████╗ ██████╗  ██████╗██╗███████╗████████╗██╗   ██╗
+      ██╔════╝██╔════╝██╔═══██╗██╔════╝██║██╔════╝╚══██╔══╝╚██╗ ██╔╝
+      █████╗  ███████╗██║   ██║██║     ██║█████╗     ██║    ╚████╔╝ 
+      ██╔══╝  ╚════██║██║   ██║██║     ██║██╔══╝     ██║     ╚██╔╝  
+      ██║     ███████║╚██████╔╝╚██████╗██║███████╗   ██║      ██║   
+      ╚═╝     ╚══════╝ ╚═════╝  ╚═════╝╚═╝╚══════╝   ╚═╝      ╚═╝   
+                                                                    
+      Hello, friend. Maybe you're wondering what I'm doing here.
+      I'm curious too. I'm curious about what happens when we know too much.
+      Control is an illusion.
+      
+      Type 'fsociety' to see something interesting...
+      `);
+      
+      // Konami code + fsociety trigger
+      let keys = [];
+      let fsociety = ['f','s','o','c','i','e','t','y'];
+      let konamiCode = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+      
+      window.addEventListener('keydown', (e) => {
+        keys.push(e.key);
+        
+        // Check for fsociety
+        if (keys.slice(-8).join('') === fsociety.join('')) {
+          document.body.style.fontFamily = 'monospace';
+          document.body.style.backgroundColor = '#0a0a0a';
+          document.body.style.color = '#00ff00';
+          alert("Hello, friend. I've been waiting for you. Remember, sometimes what we're looking for is right in front of us.");
+          setTimeout(() => {
+            document.body.style = '';
+          }, 5000);
+        }
+        
+        // Check for Konami code
+        if (keys.slice(-10).join(',') === konamiCode.join(',')) {
+          document.body.classList.add('glitch');
+          setTimeout(() => {
+            document.body.classList.remove('glitch');
+          }, 3000);
+        }
+        
+        // Keep the array at a reasonable size
+        if (keys.length > 20) {
+          keys = keys.slice(-20);
+        }
+      });
+    </script>
+    <style>
+      .glitch {
+        animation: glitch 0.3s infinite;
+      }
+      @keyframes glitch {
+        0% { transform: translate(0) }
+        20% { transform: translate(-2px, 2px) }
+        40% { transform: translate(-2px, -2px) }
+        60% { transform: translate(2px, 2px) }
+        80% { transform: translate(2px, -2px) }
+        100% { transform: translate(0) }
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <div style="padding: 2rem; text-align: center; font-family: 'Inter', sans-serif;">
+        <h1>JavaScript Required</h1>
+        <p>DrugCheck requires JavaScript to function. Please enable JavaScript in your browser settings to use this application.</p>
+        <!-- Hidden Mr. Robot reference -->
+        <div style="display: none;">We're all living in each other's paranoia.</div>
+      </div>
+    </noscript>
+    <!-- Hidden comment with Mr. Robot quote -->
+    <!-- "The world itself's just one big hoax. Spamming each other with our running commentary of bullshit masquerading as insight." -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
