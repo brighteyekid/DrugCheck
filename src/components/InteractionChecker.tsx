@@ -2,15 +2,14 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FaTimes, FaExclamationTriangle, FaInfoCircle, FaPills, 
-  FaFlask, FaArrowRight, FaShieldAlt, FaHeartbeat, FaSearch,
+  FaFlask, FaShieldAlt, FaSearch,
   FaClock
 } from 'react-icons/fa';
-import { Drug, InteractionResult, DetailedInteraction, MedicationReportData } from '../types/types';
+import { Drug, DetailedInteraction, MedicationReportData } from '../types/types';
 import DrugSearch from './DrugSearch';
 import { checkInteractions, generateDetailedReport } from '../services/api';
 import '../styles/InteractionChecker.css';
 import { useDrugContext } from '../context/DrugContext';
-// import LoadingSpinner from './LoadingSpinner';
 import MedicationReport from './MedicationReport';
 
 const InteractionChecker: React.FC = () => {
@@ -56,7 +55,12 @@ const InteractionChecker: React.FC = () => {
       
       setIsAiAnalysis(interactionData.some(result => result.aiGenerated === true));
       setInteractions(interactionData);
-      interactionData.forEach(saveInteraction);
+      interactionData.forEach((interaction: DetailedInteraction) => {
+        saveInteraction({
+          drugPair: [selectedDrugs[0], selectedDrugs[1]],
+          interaction: interaction
+        });
+      });
       
       const detailedReport = await generateDetailedReport(selectedDrugs);
       setReport(detailedReport);

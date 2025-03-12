@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  FaExclamationTriangle, FaHeartbeat, FaUserMd, 
+  FaExclamationTriangle, 
   FaShieldAlt, FaChartLine, FaPills, FaInfoCircle, FaClock, 
   FaChevronDown, FaChevronUp, FaStethoscope, FaCalendarAlt,
   FaUtensils, FaRunning, FaExclamationCircle, FaCheckCircle,
@@ -59,7 +59,6 @@ const MedicationReport: React.FC<MedicationReportProps> = ({ report }) => {
       const reportElement = reportRef.current;
       
       // Force background colors to be included
-      const originalStyle = window.getComputedStyle(document.body);
       const originalBg = document.body.style.background;
       document.body.style.background = 'white';
       
@@ -125,7 +124,6 @@ const MedicationReport: React.FC<MedicationReportProps> = ({ report }) => {
       const imgWidth = canvas.width;
       const imgHeight = canvas.height;
       const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-      const imgX = (pdfWidth - imgWidth * ratio) / 2;
       
       // Calculate how many pages we need
       const totalPages = Math.ceil(imgHeight * ratio / pdfHeight);
@@ -138,21 +136,14 @@ const MedicationReport: React.FC<MedicationReportProps> = ({ report }) => {
         
         // Calculate which part of the image to use for this page
         const sourceY = page * pdfHeight / ratio;
-        const sourceHeight = Math.min(pdfHeight / ratio, imgHeight - sourceY);
         
         pdf.addImage(
           imgData, 
           'PNG', 
-          imgX, 
           0, 
-          imgWidth * ratio, 
-          imgHeight * ratio, 
-          undefined, 
-          'FAST',
-          0,
-          sourceY,
-          imgWidth,
-          sourceHeight
+          0, 
+          imgWidth, 
+          imgHeight
         );
       }
       
@@ -172,23 +163,6 @@ const MedicationReport: React.FC<MedicationReportProps> = ({ report }) => {
     } finally {
       setIsDownloading(false);
     }
-  };
-
-  // Helper functions for PDF colors
-  const getRiskColor = (risk: string): number[] => {
-    const lowerRisk = risk.toLowerCase();
-    if (lowerRisk.includes('high')) return [220, 0, 0]; // Red
-    if (lowerRisk.includes('moderate')) return [230, 126, 0]; // Orange
-    if (lowerRisk.includes('low')) return [0, 128, 0]; // Green
-    return [0, 0, 0]; // Black
-  };
-
-  const getSeverityPdfColor = (severity: string): number[] => {
-    const lowerSeverity = severity.toLowerCase();
-    if (lowerSeverity.includes('contraindicated') || lowerSeverity.includes('severe')) return [220, 0, 0]; // Red
-    if (lowerSeverity.includes('moderate')) return [230, 126, 0]; // Orange
-    if (lowerSeverity.includes('minor') || lowerSeverity.includes('low')) return [0, 128, 0]; // Green
-    return [100, 100, 100]; // Gray
   };
 
   return (
@@ -397,27 +371,13 @@ const MedicationReport: React.FC<MedicationReportProps> = ({ report }) => {
                       </div>
                       <p className="interaction-description">{interaction.description}</p>
                       
-                      {interaction.clinicalEffects && interaction.clinicalEffects.length > 0 && (
-                        <div className="interaction-detail-section">
-                          <h4><FaHeartbeat /> Clinical Effects</h4>
-                          <ul className="detail-list">
-                            {interaction.clinicalEffects.map((effect, i) => (
-                              <li key={i}>{effect}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
+                      {interaction.clinicalEffects?.map((effect: string, i: number) => (
+                        <div key={i}>{effect}</div>
+                      ))}
                       
-                      {interaction.managementSteps && interaction.managementSteps.length > 0 && (
-                        <div className="interaction-detail-section">
-                          <h4><FaUserMd /> Management</h4>
-                          <ul className="detail-list">
-                            {interaction.managementSteps.map((step, i) => (
-                              <li key={i}>{step}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
+                      {interaction.managementSteps?.map((step: string, i: number) => (
+                        <div key={i}>{step}</div>
+                      ))}
                       
                       {interaction.recommendation && (
                         <div className="interaction-recommendation">

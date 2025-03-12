@@ -1,4 +1,4 @@
-import { Drug, InteractionResult } from '../types/types';
+import { Drug, InteractionResult, DrugDetails, DetailedInteraction } from '../types/types';
 
 // Get environment variables
 const MISTRAL_API_KEY = import.meta.env.VITE_MISTRAL_API_KEY;
@@ -10,6 +10,15 @@ if (!MISTRAL_API_KEY) {
 }
 
 const MISTRAL_API_URL = 'https://api.mistral.ai/v1/chat/completions';
+
+// Update the Interaction type
+interface Interaction {
+  severity: 'High' | 'Moderate' | 'Low' | 'Unknown' | 'Contraindicated' | 'Severe' | 'Minor';
+  description: string;
+  recommendation: string;
+  confidence?: number;
+  aiGenerated?: boolean;
+}
 
 export const analyzeInteractions = async (drugs: Drug[] | [Drug, Drug]): Promise<InteractionResult[]> => {
   if (!MISTRAL_API_KEY || !Array.isArray(drugs) || drugs.length < 2) return [];
@@ -64,11 +73,16 @@ export const analyzeInteractions = async (drugs: Drug[] | [Drug, Drug]): Promise
     }
 
     const analysis = parseAIResponse(data.choices[0].message.content);
+    
+    // Use the parsed analysis instead of hardcoded values
     return [{
       drugPair: [drug1, drug2],
       interaction: {
-        ...analysis,
-        aiGenerated: true
+        aiGenerated: true,
+        severity: analysis.severity as 'High' | 'Moderate' | 'Low' | 'Unknown' | 'Contraindicated' | 'Severe' | 'Minor',
+        description: analysis.description,
+        recommendation: analysis.recommendation,
+        confidence: analysis.confidence
       }
     }];
   } catch (error) {
@@ -112,21 +126,6 @@ function parseAIResponse(response: string) {
     recommendation,
     confidence: 0.8
   };
-}
-
-async function retryOperation<T>(operation: () => Promise<T>, maxRetries = 3): Promise<T> {
-  let lastError: any;
-  
-  for (let i = 0; i < maxRetries; i++) {
-    try {
-      return await operation();
-    } catch (error) {
-      lastError = error;
-      await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, i)));
-    }
-  }
-  
-  throw lastError;
 }
 
 export const generateAIAnalysis = async (drugs: DrugDetails[], interactions: DetailedInteraction[]) => {
@@ -243,15 +242,7 @@ function defaultAIAnalysis() {
     overallRiskLevel: 'Unknown',
     keyConsiderations: ['Please consult with your healthcare provider for a detailed analysis'],
     suggestedMonitoring: ['Regular check-ups with your healthcare provider'],
+    timingRecommendations: ['Take medications as prescribed'],
     lifestyleRecommendations: ['Follow prescribed medication schedule', 'Report any unusual symptoms']
   };
 }
-
-// Update the InteractionResult type
-const interactionResult: Interaction = {
-  aiGenerated: true,
-  severity: 'Unknown', // Ensure severity matches the Interaction type
-  description: 'AI-generated interaction analysis',
-  recommendation: 'Consult your healthcare provider',
-  confidence: 0.9,
-}; 

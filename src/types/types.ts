@@ -63,16 +63,13 @@ export interface DrugDetails extends Drug {
 }
 
 export interface DetailedInteraction extends Interaction {
-  onset?: 'Rapid' | 'Delayed' | 'Unknown';
-  severity: 'Contraindicated' | 'Severe' | 'Moderate' | 'Minor' | 'Unknown';
-  documentation?: 'Excellent' | 'Good' | 'Fair' | 'Limited' | 'Unknown';
+  documentation?: 'Excellent' | 'Good' | 'Fair' | 'Limited' | 'Unknown' | 'AI Generated' | 'RxNav';
+  onset?: string;
   clinicalEffects?: string[];
-  riskFactors?: string[];
-  patientMonitoring?: string[];
   managementSteps?: string[];
+  timingRecommendations: string[];
+  riskFactors?: string[];
   mechanismDetail?: string;
-  onsetTime?: string;
-  duration?: string;
 }
 
 export interface MedicationReportData {

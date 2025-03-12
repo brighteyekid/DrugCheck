@@ -1,7 +1,36 @@
-import { Drug, InteractionResult, DrugDetails, DetailedInteraction, MedicationReportData } from "../types/types";
+import { Drug, InteractionResult, DetailedInteraction, MedicationReportData } from "../types/types";
 import { analyzeInteractions, generateAIAnalysis } from './aiService';
 
 const RXNORM_API_BASE = 'https://rxnav.nlm.nih.gov/REST';
+
+// Define DrugDetails interface here if needed
+export interface DrugDetails {
+  id: string;
+  name: string;
+  genericName: string;
+  brandNames?: string[];
+  category?: string;
+  description?: string;
+  warnings?: string[];
+  sideEffects?: string[];
+  dosageInfo?: string;
+  rawData?: any;
+  properties?: any;
+  dosage?: string;
+  frequency?: string;
+  usageInstructions?: string;
+  commonUsages?: string[];
+  contraindications?: string[];
+  drugClass?: string;
+  mechanismOfAction?: string;
+  halfLife?: string;
+  metabolism?: string;
+  excretion?: string;
+  foodInteractions?: string[];
+  pregnancyCategory?: string;
+  breastfeedingSafety?: string;
+  monitoring?: string[];
+}
 
 // Combined comprehensive drug details function
 export const getDrugDetails = async (rxcui: string): Promise<DrugDetails> => {
@@ -93,22 +122,36 @@ export const checkInteractions = async (rxcuis: string[]): Promise<DetailedInter
       // Process pairs sequentially to avoid rate limiting
       for (const pair of allPairs) {
         try {
-          const aiResult = await analyzeInteractions(pair);
+          const aiResult = await analyzeInteractions([
+            {
+              id: pair[0].id || pair[0].name,
+              name: pair[0].name,
+              genericName: pair[0].genericName,
+              dosage: pair[0].dosage,
+              frequency: pair[0].frequency
+            } as Drug,
+            {
+              id: pair[1].id || pair[1].name,
+              name: pair[1].name,
+              genericName: pair[1].genericName,
+              dosage: pair[1].dosage,
+              frequency: pair[1].frequency
+            } as Drug
+          ]);
           
           if (aiResult && aiResult.length > 0) {
             const detailedInteraction: DetailedInteraction = {
               severity: mapSeverity(aiResult[0].interaction.severity),
-              description: `Interaction between ${pair[0].name} and ${pair[1].name}: ${aiResult[0].interaction.description}`,
-              documentation: 'AI Generated',
-              onset: 'Unknown',
+              description: aiResult[0].interaction.description,
+              documentation: 'Unknown',
+              onset: '',
               clinicalEffects: [],
               riskFactors: [],
-              patientMonitoring: [],
-              managementSteps: [aiResult[0].interaction.recommendation],
-              mechanismDetail: aiResult[0].interaction.mechanism || '',
-              onsetTime: '',
-              duration: '',
-              aiGenerated: true
+              managementSteps: [],
+              mechanism: aiResult[0].interaction.mechanism || '',
+              aiGenerated: true,
+              timingRecommendations: ['Take as directed by your healthcare provider'],
+              recommendation: aiResult[0].interaction.recommendation || 'Consult your healthcare provider'
             };
             
             allInteractions.push(detailedInteraction);
@@ -139,16 +182,15 @@ function parseInteractionResponse(data: any): DetailedInteraction[] {
         interactions.push({
           severity: mapSeverity(interaction.severity),
           description: interaction.comment || 'No description available',
-          documentation: 'RxNav',
-          onset: 'Unknown',
+          documentation: 'Unknown',
+          onset: '',
           clinicalEffects: [interaction.effect || ''],
           riskFactors: [],
-          patientMonitoring: [],
           managementSteps: [],
-          mechanismDetail: interaction.interactionMechanism || '',
-          onsetTime: '',
-          duration: '',
-          aiGenerated: false
+          mechanism: interaction.interactionMechanism || '',
+          aiGenerated: false,
+          timingRecommendations: ['Take as directed by your healthcare provider'],
+          recommendation: interaction.comment || 'Consult your healthcare provider'
         });
       });
     });
@@ -167,118 +209,109 @@ function mapSeverity(severity: string): 'Contraindicated' | 'Severe' | 'Moderate
   return 'Unknown';
 }
 
-// Generate summary statistics
-function generateSummary(drugs: DrugDetails[], interactions: DetailedInteraction[]) {
-  const severityCount = {
-    contraindicated: 0,
-    severe: 0,
-    moderate: 0,
-    minor: 0,
-    unknown: 0
-  };
-
-  interactions.forEach(interaction => {
-    const severity = interaction.severity.toLowerCase();
-    if (severity in severityCount) {
-      severityCount[severity as keyof typeof severityCount]++;
-    } else {
-      severityCount.unknown++;
-    }
-  });
-
-  const requiresImmediateAttention = interactions.some(
-    i => i.severity === 'Contraindicated' || i.severity === 'Severe'
-  );
-
-  return {
-    totalMedications: drugs.length,
-    totalInteractions: interactions.length,
-    severityBreakdown: severityCount,
-    requiresImmediateAttention,
-    keyFindings: generateKeyFindings(drugs, interactions),
-    recommendations: generateRecommendations(interactions)
-  };
-}
-
-// Helper function to generate key findings
+// Helper function to generate key findings based on medications and interactions
 function generateKeyFindings(drugs: DrugDetails[], interactions: DetailedInteraction[]): string[] {
-  if (!interactions || interactions.length === 0) {
-    return ['No significant interactions detected between the selected medications.'];
-  }
+  const findings: string[] = [];
   
-  const findings = [];
+  // Add findings for severe interactions
+  const severeInteractions = interactions.filter(i => 
+    i.severity === 'Contraindicated' || 
+    i.severity === 'Severe'
+  );
   
-  // Count severe interactions
-  const severeCount = interactions.filter(i => 
-    i.severity.toLowerCase().includes('contraindicated') || 
-    i.severity.toLowerCase().includes('severe')
-  ).length;
-  
-  if (severeCount > 0) {
-    findings.push(`${severeCount} severe interaction${severeCount > 1 ? 's' : ''} detected that require immediate attention.`);
-  }
-  
-  // Add drug-specific findings
-  drugs.forEach(drug => {
-    const drugInteractions = interactions.filter(i => 
-      i.description.toLowerCase().includes(drug.name.toLowerCase())
-    );
+  if (severeInteractions.length > 0) {
+    findings.push(`Found ${severeInteractions.length} severe or contraindicated interactions that require immediate attention.`);
     
-    if (drugInteractions.length > 0) {
-      findings.push(`${drug.name} is involved in ${drugInteractions.length} interaction${drugInteractions.length > 1 ? 's' : ''}.`);
+    // Add specific severe interactions
+    severeInteractions.forEach(interaction => {
+      findings.push(interaction.description);
+    });
+  }
+  
+  // Add findings for medications with narrow therapeutic index if any
+  const narrowTherapeuticDrugs = drugs.filter(d => 
+    d.name.toLowerCase().includes('warfarin') || 
+    d.name.toLowerCase().includes('digoxin') || 
+    d.name.toLowerCase().includes('phenytoin') ||
+    d.name.toLowerCase().includes('lithium') ||
+    d.name.toLowerCase().includes('theophylline')
+  );
+  
+  if (narrowTherapeuticDrugs.length > 0) {
+    findings.push(`Your regimen includes ${narrowTherapeuticDrugs.length} medications with a narrow therapeutic index that require careful monitoring.`);
+  }
+  
+  // If no specific findings, add a general note
+  if (findings.length === 0) {
+    if (interactions.length > 0) {
+      findings.push(`Found ${interactions.length} potential interactions of varying severity.`);
+    } else {
+      findings.push('No significant interactions detected between your medications.');
     }
-  });
+  }
   
   return findings;
 }
 
-// Helper function to generate recommendations
+// Helper function to generate recommendations based on interactions
 function generateRecommendations(interactions: DetailedInteraction[]): string[] {
-  if (!interactions || interactions.length === 0) {
-    return ['No specific recommendations at this time.'];
-  }
+  const recommendations: string[] = [];
   
-  // Create recommendations based on severity
+  // Add recommendations for severe interactions
   const severeInteractions = interactions.filter(i => 
-    i.severity.toLowerCase().includes('contraindicated') || 
-    i.severity.toLowerCase().includes('severe')
+    i.severity === 'Contraindicated' || 
+    i.severity === 'Severe'
   );
   
-  const recommendations = [];
-  
   if (severeInteractions.length > 0) {
-    recommendations.push('Consult with your healthcare provider immediately about these medication interactions.');
+    recommendations.push('Consult with your healthcare provider immediately about the severe interactions detected.');
   }
   
-  // Add general recommendations
-  recommendations.push('Review all medication timing to minimize interaction risks.');
-  recommendations.push('Report any unusual symptoms to your healthcare provider promptly.');
+  // Add recommendations for moderate interactions
+  const moderateInteractions = interactions.filter(i => i.severity === 'Moderate');
+  if (moderateInteractions.length > 0) {
+    recommendations.push('Monitor for side effects from moderate interactions and discuss with your healthcare provider.');
+  }
   
-  // Add specific recommendations from interactions
-  const specificRecs = interactions
-    .filter(i => i.managementSteps && i.managementSteps.length > 0)
-    .flatMap(i => i.managementSteps || []);
+  // Collect unique recommendations from all interactions
+  const uniqueRecommendations = new Set<string>();
+  interactions.forEach(interaction => {
+    if (interaction.recommendation) {
+      uniqueRecommendations.add(interaction.recommendation);
+    }
+  });
   
-  return [...recommendations, ...specificRecs];
+  // Add unique recommendations
+  uniqueRecommendations.forEach(rec => {
+    recommendations.push(rec);
+  });
+  
+  // If no specific recommendations, add general advice
+  if (recommendations.length === 0) {
+    recommendations.push('Take all medications as prescribed by your healthcare provider.');
+    recommendations.push('Report any unusual symptoms or side effects to your healthcare provider.');
+  }
+  
+  return recommendations;
 }
 
 // Update the generateDetailedReport function to handle errors better
 export const generateDetailedReport = async (drugs: Drug[]): Promise<MedicationReportData> => {
   try {
     // Convert drugs to DrugDetails
-    const detailedDrugs = drugs.map(drug => {
-      return {
-        ...drug,
-        // Preserve existing dosage and frequency if they exist
-        dosage: drug.dosage || 'Not specified',
-        frequency: drug.frequency || 'Not specified',
-        // Add other details as needed
-        drugClass: drug.category || 'Unknown',
-        commonUsages: drug.description ? [drug.description] : [],
-        mechanismOfAction: '',
-        contraindications: drug.warnings || []
-      } as DrugDetails;
-    });
+    const detailedDrugs = await Promise.all(
+      drugs.map(async (drug) => {
+        // Ensure each drug has an id
+        return {
+          id: drug.id || drug.name,
+          name: drug.name,
+          genericName: drug.genericName,
+          dosage: drug.dosage,
+          frequency: drug.frequency,
+          // ... other properties
+        } as import('../types/types').DrugDetails;
+      })
+    );
 
     // Get interactions between all drugs
     const rxcuis = drugs.map(d => d.id);
@@ -293,19 +326,26 @@ export const generateDetailedReport = async (drugs: Drug[]): Promise<MedicationR
     }
 
     // Generate AI analysis with error handling
-    let aiAnalysis;
+    let aiAnalysis = {
+      overallRiskLevel: 'Unknown',
+      keyConsiderations: [] as string[],
+      suggestedMonitoring: [] as string[],
+      timingRecommendations: [] as string[],
+      lifestyleRecommendations: [] as string[]
+    };
     try {
-      aiAnalysis = await generateAIAnalysis(detailedDrugs, interactions);
+      const generatedAnalysis = await generateAIAnalysis(detailedDrugs, interactions);
+      aiAnalysis = {
+        overallRiskLevel: generatedAnalysis.overallRiskLevel,
+        keyConsiderations: generatedAnalysis.keyConsiderations,
+        suggestedMonitoring: generatedAnalysis.suggestedMonitoring,
+        timingRecommendations: ['Take medications as prescribed'],
+        lifestyleRecommendations: generatedAnalysis.lifestyleRecommendations
+      };
     } catch (error) {
       console.error('Error generating AI analysis:', error);
       // Provide fallback AI analysis
-      aiAnalysis = {
-        overallRiskLevel: 'Unknown',
-        keyConsiderations: ['Unable to generate detailed analysis. Please consult with your healthcare provider.'],
-        suggestedMonitoring: ['Regular check-ups with your healthcare provider'],
-        timingRecommendations: ['Take medications as prescribed'],
-        lifestyleRecommendations: ['Follow your healthcare provider\'s recommendations']
-      };
+      aiAnalysis = defaultAIAnalysis();
     }
 
     // Count interactions by severity
@@ -367,13 +407,7 @@ export const generateDetailedReport = async (drugs: Drug[]): Promise<MedicationR
         keyFindings: ['Unable to analyze interactions. Please consult with your healthcare provider.'],
         recommendations: ['Consult with your healthcare provider about potential interactions.']
       },
-      aiAnalysis: {
-        overallRiskLevel: 'Unknown',
-        keyConsiderations: ['Unable to generate detailed analysis. Please consult with your healthcare provider.'],
-        suggestedMonitoring: ['Regular check-ups with your healthcare provider'],
-        timingRecommendations: ['Take medications as prescribed'],
-        lifestyleRecommendations: ['Follow your healthcare provider\'s recommendations']
-      }
+      aiAnalysis: defaultAIAnalysis()
     };
   }
 };
@@ -450,9 +484,14 @@ export const searchDrugs = async (query: string): Promise<Drug[]> => {
   }
 };
 
-function checkRxNavInteractions(rxcuis: string[]): Promise<InteractionResult[]> {
-  // Implementation of checkRxNavInteractions function
-  // This is a placeholder and should be implemented based on the actual RxNav API
-  return Promise.resolve([]);
+// Ensure the function returns an object with timingRecommendations
+function defaultAIAnalysis() {
+  return {
+    overallRiskLevel: 'Unknown',
+    keyConsiderations: ['Please consult with your healthcare provider for a detailed analysis'],
+    suggestedMonitoring: ['Regular check-ups with your healthcare provider'],
+    timingRecommendations: ['Take medications as prescribed'],
+    lifestyleRecommendations: ['Follow prescribed medication schedule', 'Report any unusual symptoms']
+  };
 }
 
