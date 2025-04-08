@@ -110,6 +110,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 For any questions or support, please reach out to:
 
 Email: cb2117@srmist.edu.in
+Email: ss5429@srmist.edu.in
 
 
 ## 🙏 Acknowledgements
