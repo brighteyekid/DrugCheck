@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaSearch, FaPills, FaSpinner, FaPlus, FaClock, FaFlask, FaClipboardCheck } from 'react-icons/fa';
-import { searchDrugs } from '../services/api';
+import { FaSearch, FaPills, FaSpinner, FaPlus, FaClock, FaFlask, FaClipboardCheck, FaExchangeAlt } from 'react-icons/fa';
+import { searchDrugs, searchByIngredient } from '../services/api';
 import { Drug } from '../types/types';
 import '../styles/DrugSearch.css';
-import { useDrugContext } from '../context/DrugContext';
+import { useDrugContext } from '../context/useDrugContext';
 
 interface DrugSearchProps {
   onDrugSelect: (drug: Drug, dosage: string, frequency: string) => void;
@@ -20,8 +20,16 @@ const DrugSearch: React.FC<DrugSearchProps> = ({ onDrugSelect, selectedDrugs }) 
   const [selectedDrug, setSelectedDrug] = useState<Drug | null>(null);
   const [dosage, setDosage] = useState('');
   const [frequency, setFrequency] = useState('');
+  const [searchMode, setSearchMode] = useState<'name' | 'ingredient'>('name');
   const searchTimeout = useRef<NodeJS.Timeout>();
   const { recentSearches } = useDrugContext();
+
+  const toggleSearchMode = () => {
+    setSearchMode(prev => prev === 'name' ? 'ingredient' : 'name');
+    setQuery('');
+    setResults([]);
+    setError(null);
+  };
 
   useEffect(() => {
     const fetchDrugs = async () => {
@@ -34,7 +42,13 @@ const DrugSearch: React.FC<DrugSearchProps> = ({ onDrugSelect, selectedDrugs }) 
       setLoading(true);
       setError(null);
       try {
-        const drugs = await searchDrugs(query);
+        let drugs: Drug[];
+        if (searchMode === 'name') {
+          drugs = await searchDrugs(query);
+        } else {
+          drugs = await searchByIngredient(query);
+        }
+
         // Filter out already selected drugs and duplicates
         const filteredDrugs = drugs.filter(
           drug => !selectedDrugs.some(selected => selected.id === drug.id)
@@ -42,7 +56,7 @@ const DrugSearch: React.FC<DrugSearchProps> = ({ onDrugSelect, selectedDrugs }) 
         
         setResults(filteredDrugs);
         if (filteredDrugs.length === 0 && query.length >= 2) {
-          setError('No medications found');
+          setError(`No medications found by ${searchMode === 'name' ? 'name' : 'ingredient'}`);
         }
       } catch (error) {
         setError('Error searching medications');
@@ -52,21 +66,18 @@ const DrugSearch: React.FC<DrugSearchProps> = ({ onDrugSelect, selectedDrugs }) 
       }
     };
 
-    // Clear previous timeout
     if (searchTimeout.current) {
       clearTimeout(searchTimeout.current);
     }
 
-    // Set new timeout for debouncing
     searchTimeout.current = setTimeout(fetchDrugs, 300);
 
-    // Cleanup
     return () => {
       if (searchTimeout.current) {
         clearTimeout(searchTimeout.current);
       }
     };
-  }, [query, selectedDrugs]);
+  }, [query, selectedDrugs, searchMode]);
 
   // Add recent searches to results when query is empty
   useEffect(() => {
@@ -104,7 +115,9 @@ const DrugSearch: React.FC<DrugSearchProps> = ({ onDrugSelect, selectedDrugs }) 
         )}
         <input
           type="text"
-          placeholder="Type medication name (min. 2 characters)..."
+          placeholder={searchMode === 'name' 
+            ? "Type medication name (min. 2 characters)..." 
+            : "Type active ingredient (min. 2 characters)..."}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setFocused(true)}
@@ -114,6 +127,13 @@ const DrugSearch: React.FC<DrugSearchProps> = ({ onDrugSelect, selectedDrugs }) 
           className="search-input"
           disabled={!!selectedDrug}
         />
+        <button 
+          className="toggle-search-mode"
+          onClick={toggleSearchMode}
+          title={`Switch to ${searchMode === 'name' ? 'ingredient' : 'name'} search`}
+        >
+          <FaExchangeAlt className={`toggle-icon ${searchMode === 'ingredient' ? 'active' : ''}`} />
+        </button>
       </motion.div>
 
       <AnimatePresence>

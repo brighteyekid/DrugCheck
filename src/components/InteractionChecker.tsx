@@ -9,7 +9,7 @@ import { Drug, DetailedInteraction, MedicationReportData } from '../types/types'
 import DrugSearch from './DrugSearch';
 import { checkInteractions, generateDetailedReport } from '../services/api';
 import '../styles/InteractionChecker.css';
-import { useDrugContext } from '../context/DrugContext';
+import { useDrugContext } from '../context/useDrugContext';
 import MedicationReport from './MedicationReport';
 
 const InteractionChecker: React.FC = () => {

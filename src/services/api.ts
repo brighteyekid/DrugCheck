@@ -484,6 +484,72 @@ export const searchDrugs = async (query: string): Promise<Drug[]> => {
   }
 };
 
+export const searchByIngredient = async (query: string): Promise<Drug[]> => {
+  if (!query.trim()) return [];
+  
+  try {
+    // First, search for ingredient concepts
+    const ingredientResponse = await fetch(
+      `${RXNORM_API_BASE}/rxcui.json?name=${encodeURIComponent(query)}&searchType=ingredients`
+    );
+    const ingredientData = await ingredientResponse.json();
+    
+    if (!ingredientData.idGroup?.rxnormId?.length) {
+      // If no exact match, try approximate match for ingredients
+      const approxResponse = await fetch(
+        `${RXNORM_API_BASE}/approximateTerm.json?term=${encodeURIComponent(query)}&searchType=ingredients&maxEntries=20`
+      );
+      const approxData = await approxResponse.json();
+      const candidates = approxData.approximateGroup?.candidate || [];
+      
+      // Get related drugs for each ingredient candidate
+      const relatedDrugs = await Promise.all(
+        candidates.slice(0, 5).map(async (candidate: any) => {
+          const relatedResponse = await fetch(
+            `${RXNORM_API_BASE}/rxcui/${candidate.rxcui}/related.json?tty=SBD+SCD`
+          );
+          const relatedData = await relatedResponse.json();
+          return relatedData.relatedGroup?.conceptGroup || [];
+        })
+      );
+
+      // Format and return the results
+      return formatDrugResults(relatedDrugs.flat());
+    }
+    
+    // Get related drugs for exact ingredient match
+    const rxcui = ingredientData.idGroup.rxnormId[0];
+    const relatedResponse = await fetch(
+      `${RXNORM_API_BASE}/rxcui/${rxcui}/related.json?tty=SBD+SCD`
+    );
+    const relatedData = await relatedResponse.json();
+    
+    return formatDrugResults(relatedData.relatedGroup?.conceptGroup || []);
+  } catch (error) {
+    console.error('Error searching by ingredient:', error);
+    return [];
+  }
+};
+
+const formatDrugResults = (conceptGroups: any[]): Drug[] => {
+  const drugs: Drug[] = [];
+  
+  for (const group of conceptGroups) {
+    if (group.conceptProperties) {
+      for (const prop of group.conceptProperties) {
+        drugs.push({
+          id: prop.rxcui,
+          name: prop.name,
+          genericName: prop.synonym || prop.name,
+          category: group.tty,
+        });
+      }
+    }
+  }
+  
+  return drugs;
+};
+
 // Ensure the function returns an object with timingRecommendations
 function defaultAIAnalysis() {
   return {

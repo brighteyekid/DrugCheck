@@ -6,8 +6,30 @@ import InteractionChecker from './components/InteractionChecker';
 import Navbar from './components/Navbar';
 import ErrorBoundary from './components/ErrorBoundary';
 import BootSplash from './components/BootSplash';
+import MentalHealthChatbot from './components/MentalHealthChatbot';
+import MedicineAlternativeFinder from './components/MedicineAlternativeFinder';
+import HealthInsightGenerator from './components/HealthInsightGenerator';
+import UniversalHealthID from './components/UniversalHealthID';
 import { DrugProvider } from './context/DrugContext';
 import './styles/global.css';
+
+function MainContent() {
+  return (
+    <Router>
+      <Navbar />
+      <div className="page-container">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/checker" element={<InteractionChecker />} />
+          <Route path="/universal-id" element={<UniversalHealthID />} />
+          <Route path="/mental-health" element={<MentalHealthChatbot />} />
+          <Route path="/med-alternatives" element={<MedicineAlternativeFinder />} />
+          <Route path="/health-insights" element={<HealthInsightGenerator />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+}
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -18,21 +40,15 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <AnimatePresence mode="wait">
-        {loading ? (
-          <BootSplash key="bootsplash" onFinished={handleSplashFinished} />
-        ) : (
-          <DrugProvider key="app-content">
-            <Router>
-              <Navbar />
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/checker" element={<InteractionChecker />} />
-              </Routes>
-            </Router>
-          </DrugProvider>
-        )}
-      </AnimatePresence>
+      <DrugProvider>
+        <AnimatePresence mode="wait">
+          {loading ? (
+            <BootSplash key="bootsplash" onFinished={handleSplashFinished} />
+          ) : (
+            <MainContent key="app-content" />
+          )}
+        </AnimatePresence>
+      </DrugProvider>
     </ErrorBoundary>
   );
 }

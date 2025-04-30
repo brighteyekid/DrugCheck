@@ -97,4 +97,57 @@ export interface MedicationReportData {
     timingRecommendations: string[];
     lifestyleRecommendations: string[];
   };
+}
+
+export interface MedicineAlternative {
+  name: string;
+  price: number;
+  notes: string;
+}
+
+export interface MedicineInfo {
+  genericName: string;
+  category: string;
+  price: number;
+  purpose: string;
+  alternatives: MedicineAlternative[];
+}
+
+export interface UserHealthData {
+  gender?: 'male' | 'female' | 'other';
+  birthdate?: string;
+  height?: number; // in cm
+  weight?: number; // in kg
+  bloodPressureSystolic?: number;
+  bloodPressureDiastolic?: number;
+  smoker?: boolean;
+  exerciseFrequency?: 'rarely' | 'sometimes' | 'regularly' | 'daily';
+  averageSleep?: number;
+  // Additional fields for UniversalHealthID
+  name?: string;
+  age?: string;
+  bloodType?: string;
+  allergies?: string;
+  conditions?: string;
+  currentMedications?: string[];
+  emergencyContact?: string;
+}
+
+export interface HealthInsight {
+  overview: {
+    age: number;
+    bmi: string;
+    bmiCategory: string;
+    bmiRisk: string;
+  };
+  healthRisks: string[];
+  recommendations: string[];
+  timestamp: string;
+}
+
+export interface Message {
+  id: number;
+  text: string;
+  sender: 'user' | 'bot';
+  timestamp: Date;
 } 

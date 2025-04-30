@@ -5,12 +5,11 @@ import {
   FaShieldAlt, FaChartLine, FaPills, FaInfoCircle, FaClock, 
   FaChevronDown, FaChevronUp, FaStethoscope, FaCalendarAlt,
   FaUtensils, FaRunning, FaExclamationCircle, FaCheckCircle,
-  FaFileMedical, FaFlask, FaBrain, FaDownload, FaFilePdf
+  FaFileMedical, FaFlask, FaBrain
 } from 'react-icons/fa';
 import { MedicationReportData } from '../types/types';
 import '../styles/MedicationReport.css';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import PDFGenerator from './PDFGenerator';
 
 interface MedicationReportProps {
   report: MedicationReportData;
@@ -41,130 +40,6 @@ const MedicationReport: React.FC<MedicationReportProps> = ({ report }) => {
     return 'unknown';
   };
 
-  // Function to download the report as PDF
-  const downloadPDF = async () => {
-    if (!reportRef.current) return;
-    
-    try {
-      setIsDownloading(true);
-      
-      // Expand all sections for the PDF
-      const originalExpanded = [...expandedSection];
-      setExpandedSection(['overview', 'medications', 'interactions', 'monitoring', 'timing', 'lifestyle', 'considerations']);
-      
-      // Wait for state update to take effect
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Create a clone of the report element to modify for PDF
-      const reportElement = reportRef.current;
-      
-      // Force background colors to be included
-      const originalBg = document.body.style.background;
-      document.body.style.background = 'white';
-      
-      // Apply specific styles for PDF generation
-      const tempStyle = document.createElement('style');
-      tempStyle.innerHTML = `
-        .medication-report * {
-          color: black !important;
-          background-color: white !important;
-          box-shadow: none !important;
-          text-shadow: none !important;
-        }
-        .glass-panel {
-          background: white !important;
-          border: 1px solid #ddd !important;
-        }
-        .section-header, .med-header, .interaction-item, .monitoring-item, .timing-item, .lifestyle-item, .consideration-item {
-          background: #f5f5f5 !important;
-          color: black !important;
-        }
-        .severe { color: #d32f2f !important; background: #ffebee !important; }
-        .moderate { color: #f57c00 !important; background: #fff3e0 !important; }
-        .minor { color: #388e3c !important; background: #e8f5e9 !important; }
-        .unknown { color: #616161 !important; background: #f5f5f5 !important; }
-      `;
-      document.head.appendChild(tempStyle);
-      
-      // Generate PDF with better quality
-      const canvas = await html2canvas(reportElement, {
-        scale: 2, // Higher scale for better quality
-        useCORS: true,
-        logging: true,
-        backgroundColor: '#ffffff',
-        allowTaint: true,
-        foreignObjectRendering: false, // Try setting this to false
-        onclone: (clonedDoc) => {
-          // Additional modifications to the cloned document if needed
-          const clonedReport = clonedDoc.querySelector('.medication-report');
-          if (clonedReport) {
-            clonedReport.querySelectorAll('.glass-panel').forEach(panel => {
-              (panel as HTMLElement).style.background = 'white';
-              (panel as HTMLElement).style.border = '1px solid #ddd';
-            });
-          }
-        }
-      });
-      
-      // Clean up temporary styles
-      document.head.removeChild(tempStyle);
-      document.body.style.background = originalBg;
-      
-      const imgData = canvas.toDataURL('image/png');
-      
-      // Create PDF with appropriate dimensions
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
-      
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-      
-      // Calculate how many pages we need
-      const totalPages = Math.ceil(imgHeight * ratio / pdfHeight);
-      
-      // Add each page
-      for (let page = 0; page < totalPages; page++) {
-        if (page > 0) {
-          pdf.addPage();
-        }
-        
-        // Calculate which part of the image to use for this page
-        const sourceY = page * pdfHeight / ratio;
-        
-        pdf.addImage(
-          imgData, 
-          'PNG', 
-          0, 
-          0, 
-          imgWidth, 
-          imgHeight
-        );
-      }
-      
-      // Generate filename with date and medications
-      const date = new Date().toISOString().split('T')[0];
-      const medNames = medications.map(m => m.name.replace(/\s+/g, '_')).join('-');
-      const filename = `Medication_Report_${date}_${medNames}.pdf`;
-      
-      // Download the PDF
-      pdf.save(filename);
-      
-      // Restore original expanded sections
-      setExpandedSection(originalExpanded);
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-      alert('Failed to generate PDF. Please try again.');
-    } finally {
-      setIsDownloading(false);
-    }
-  };
-
   return (
     <motion.div 
       className="medication-report"
@@ -189,18 +64,12 @@ const MedicationReport: React.FC<MedicationReportProps> = ({ report }) => {
                 <FaExclamationCircle /> {aiAnalysis.overallRiskLevel} Risk
               </span>
             </div>
-            <button 
-              className="download-button" 
-              onClick={downloadPDF}
-              disabled={isDownloading}
-              aria-label="Download PDF report"
-            >
-              {isDownloading ? (
-                <span className="download-text"><FaDownload className="download-icon spin" /> Generating...</span>
-              ) : (
-                <span className="download-text"><FaFilePdf className="download-icon" /> Download PDF</span>
-              )}
-            </button>
+            <PDFGenerator 
+              report={report}
+              reportRef={reportRef}
+              isDownloading={isDownloading}
+              setIsDownloading={setIsDownloading}
+            />
           </div>
         </div>
         

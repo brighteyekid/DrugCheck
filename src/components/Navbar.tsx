@@ -1,10 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
-import { FaPills, FaHome, FaSearch } from 'react-icons/fa';
+import { FaPills, FaHome, FaSearch, FaComments, FaExchangeAlt, FaChartLine, FaIdCard } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import '../styles/Navbar.css';
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
 
@@ -73,6 +73,90 @@ const Navbar = () => {
           </Link>
           <AnimatePresence>
             {location.pathname === '/checker' && (
+              <motion.div
+                className="active-indicator"
+                layoutId="activeIndicator"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              />
+            )}
+          </AnimatePresence>
+        </motion.div>
+        
+        <motion.div className="nav-link-wrapper">
+          <Link 
+            to="/universal-id" 
+            className={location.pathname === '/universal-id' ? 'active' : ''}
+          >
+            <FaIdCard className="nav-icon" />
+            <span>Health ID</span>
+          </Link>
+          <AnimatePresence>
+            {location.pathname === '/universal-id' && (
+              <motion.div
+                className="active-indicator"
+                layoutId="activeIndicator"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              />
+            )}
+          </AnimatePresence>
+        </motion.div>
+        
+        <motion.div className="nav-link-wrapper">
+          <Link 
+            to="/mental-health" 
+            className={location.pathname === '/mental-health' ? 'active' : ''}
+          >
+            <FaComments className="nav-icon" />
+            <span>Mental Health</span>
+          </Link>
+          <AnimatePresence>
+            {location.pathname === '/mental-health' && (
+              <motion.div
+                className="active-indicator"
+                layoutId="activeIndicator"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              />
+            )}
+          </AnimatePresence>
+        </motion.div>
+        
+        <motion.div className="nav-link-wrapper">
+          <Link 
+            to="/med-alternatives" 
+            className={location.pathname === '/med-alternatives' ? 'active' : ''}
+          >
+            <FaExchangeAlt className="nav-icon" />
+            <span>Med Alternatives</span>
+          </Link>
+          <AnimatePresence>
+            {location.pathname === '/med-alternatives' && (
+              <motion.div
+                className="active-indicator"
+                layoutId="activeIndicator"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              />
+            )}
+          </AnimatePresence>
+        </motion.div>
+        
+        <motion.div className="nav-link-wrapper">
+          <Link 
+            to="/health-insights" 
+            className={location.pathname === '/health-insights' ? 'active' : ''}
+          >
+            <FaChartLine className="nav-icon" />
+            <span>Health Insights</span>
+          </Link>
+          <AnimatePresence>
+            {location.pathname === '/health-insights' && (
               <motion.div
                 className="active-indicator"
                 layoutId="activeIndicator"

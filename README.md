@@ -1,124 +1,152 @@
-# DrugCheck - Medication Interaction Analyzer
+# DrugCheck
 
-![DrugCheck Logo](public/favicon.ico)
+![DrugCheck Logo](public/logo.png)
 
-DrugCheck is a modern web application that helps users identify potential drug interactions and provides comprehensive medication analysis with AI-powered insights.
+## Comprehensive Health Management System
 
-## 🌟 Features
+DrugCheck is a powerful web application designed to help users manage their medications, identify potential drug interactions, generate emergency medical IDs, find cost-effective medication alternatives, and receive AI-powered health insights.
 
-- **Smart Drug Search**: Quickly search and find medications from our comprehensive database
-- **Interaction Detection**: Advanced AI-powered detection of potential drug interactions
-- **Safety First**: Get detailed safety information and recommendations
-- **Professional Insights**: Based on trusted medical databases and research
-- **Search History**: Keep track of your previous medication searches and interactions
-- **Real-Time Updates**: Access the latest drug information with automatic database updates
-- **PDF Reports**: Download comprehensive medication analysis reports in PDF format
+## Table of Contents
 
-## 🚀 Getting Started
+- [Features](#features)
+- [Demo](#demo)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Technology Stack](#technology-stack)
+- [Key Components](#key-components)
+- [Privacy & Security](#privacy--security)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Features
+
+### 🔍 Medication Interaction Checker
+- Search and add multiple medications to check for potential interactions
+- View detailed interaction analysis with severity ratings (severe, moderate, minor)
+- Generate and download comprehensive PDF reports
+- Save interaction history for future reference
+
+### 🏥 Universal Health ID
+- Create QR code-based medical IDs containing critical health information
+- AI analysis of your health data with personalized insights and recommendations
+- Works completely offline - all data embedded in QR code
+- Healthcare providers can scan the QR code to access vital health information in emergencies
+- Download and share QR codes for emergency use
+
+### 💊 Medicine Alternative Finder
+- Search for lower-cost alternatives to expensive medications
+- Compare prices and effectiveness of different medication options
+- Make informed decisions about your medication choices
+
+### 💬 Mental Health Support
+- Access a mental health chatbot specifically focused on medication effects
+- Document mental health concerns related to your medications
+- Receive contextualized support based on your medication profile
+
+### 📊 Health Insights Generator
+- Receive personalized health insights based on your health profile
+- Get recommendations for health monitoring based on your conditions
+- Identify potential health risks related to your specific situation
+
+## Demo
+
+Visit our demo site: [https://drugcheck-demo.vercel.app](https://drugcheck-demo.vercel.app)
+
+## Installation
 
 ### Prerequisites
-
-- Node.js (v18 or higher)
+- Node.js (v14 or higher)
 - npm or yarn
 
-### Installation
+### Setup
 
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/drug-check.git
-   cd drug-check
-   ```
+```bash
+git clone https://github.com/yourusername/drugcheck.git
+cd drugcheck
+```
 
 2. Install dependencies:
-   ```bash
-   npm install
-   # or
-   yarn
-   ```
-
-3. Create a `.env` file based on `.env.example` and add your API keys:
-   ```
-   VITE_MISTRAL_API_KEY=your_mistral_api_key_here
-   VITE_MEDICAL_MODEL=mistral-medium
-   ```
-
-4. Start the development server:
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
-
-5. Open your browser and navigate to `http://localhost:5173`
-
-## 🛠️ Built With
-
-- [React](https://reactjs.org/) - UI library
-- [TypeScript](https://www.typescriptlang.org/) - Type safety
-- [Vite](https://vitejs.dev/) - Build tool
-- [Framer Motion](https://www.framer.com/motion/) - Animations
-- [React Router](https://reactrouter.com/) - Routing
-- [React Icons](https://react-icons.github.io/react-icons/) - Icon library
-- [jsPDF](https://github.com/parallax/jsPDF) - PDF generation
-- [Mistral AI](https://mistral.ai/) - AI-powered analysis
-
-## 📋 API Usage
-
-DrugCheck uses the following APIs:
-
-- **RxNorm API**: For medication data and basic interaction information
-- **Mistral AI API**: For enhanced interaction analysis and comprehensive reports
-
-## 🧪 Running Tests
-
 ```bash
-npm run test
+npm install
+# or
+yarn install
 ```
 
-
-## 🚢 Deployment
-
-Build the application for production:
-
+3. Start the development server:
 ```bash
-npm run build
+npm run dev
+# or
+yarn dev
 ```
 
+4. Open your browser and navigate to `http://localhost:5173`
 
-The build artifacts will be stored in the `dist/` directory.
+## Usage
 
-## 📝 License
+### Checking Drug Interactions
+
+1. Navigate to the "Check Interactions" page
+2. Search for medications using the search bar
+3. Add multiple medications to your list
+4. View interaction results and severity levels
+5. Generate a detailed PDF report if needed
+
+### Creating a Health ID
+
+1. Navigate to the "Health ID" page
+2. Enter your personal and medical information
+3. Click "Generate Health ID with AI"
+4. View, download, or share the QR code
+5. Explore AI insights and recommendations
+
+### Finding Medication Alternatives
+
+1. Navigate to the "Med Alternatives" page
+2. Search for your current medication
+3. View available alternatives and cost comparisons
+4. Compare effectiveness and side effect profiles
+
+## Technology Stack
+
+- **Frontend**: React.js with TypeScript
+- **State Management**: React Context API
+- **UI Animation**: Framer Motion
+- **Styling**: CSS with responsive design
+- **QR Code Generation**: qrcode.react
+- **PDF Generation**: Client-side HTML-to-PDF
+- **Data Storage**: LocalStorage for persistence
+
+## Key Components
+
+- **DrugContext**: Central state management for the application
+- **InteractionChecker**: Core medication interaction analysis
+- **UniversalHealthID**: QR code generation with AI analysis
+- **MedicineAlternativeFinder**: Alternative medication search
+- **MentalHealthChatbot**: Medication-focused mental health support
+- **HealthInsightGenerator**: Personalized health analysis
+
+## Privacy & Security
+
+DrugCheck prioritizes user privacy:
+
+- **Local Storage Only**: All health data is stored locally on your device
+- **No Server Storage**: Your data is never sent to external servers without your explicit action
+- **Client-Side Processing**: All AI analysis happens directly in your browser
+- **User Control**: You decide when and how to share your health information
+
+## Contributing
+
+We welcome contributions to DrugCheck! Please see our [Contributing Guidelines](CONTRIBUTING.md) for more information.
+
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## ⚠️ Disclaimer
+---
 
-DrugCheck is for informational purposes only and does not replace professional medical advice. Always consult with your healthcare provider before making any changes to your medication regimen.
+## Contact
 
-## 🤝 Contributing
+For questions or support, please [open an issue](https://github.com/yourusername/drugcheck/issues) on our GitHub repository.
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📬 Contact
-
-For any questions or support, please reach out to:
-
-Email: cb2117@srmist.edu.in
-Email: ss5429@srmist.edu.in
-Email: swastik3370@gmail.com
-
-
-## 🙏 Acknowledgements
-
-- [National Library of Medicine](https://www.nlm.nih.gov/) - For the RxNorm API
-- [Mistral AI](https://mistral.ai/) - For AI capabilities
-
-
-
-
+*DrugCheck is not a substitute for professional medical advice. Always consult with a healthcare provider before making decisions about your health.* 

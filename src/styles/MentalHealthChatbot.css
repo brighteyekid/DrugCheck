@@ -1,0 +1,388 @@
+.mental-health-chatbot {
+  display: flex;
+  flex-direction: column;
+  height: 600px;
+  max-height: 80vh;
+  width: 100%;
+  background: var(--glass-bg, rgba(255, 255, 255, 0.05));
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  position: relative;
+}
+
+.chatbot-header {
+  padding: 1rem;
+  background: var(--primary-color, #6366f1);
+  color: white;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chatbot-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.chatbot-header p {
+  margin: 0.2rem 0 0;
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.chatbot-messages {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb, rgba(255, 255, 255, 0.3)) transparent;
+}
+
+.chatbot-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chatbot-messages::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb, rgba(255, 255, 255, 0.3));
+  border-radius: 3px;
+}
+
+.message {
+  display: flex;
+  gap: 0.8rem;
+  max-width: 85%;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.message.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.message-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--avatar-bg, rgba(255, 255, 255, 0.1));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.message-content {
+  background: var(--message-bg, rgba(255, 255, 255, 0.05));
+  padding: 0.8rem 1rem;
+  border-radius: 16px;
+  position: relative;
+}
+
+.message.user .message-content {
+  background: var(--user-message-bg, rgba(99, 102, 241, 0.15));
+  border-top-right-radius: 0;
+}
+
+.message.bot .message-content {
+  background: var(--bot-message-bg, rgba(255, 255, 255, 0.1));
+  border-top-left-radius: 0;
+}
+
+.message-text {
+  color: var(--text-color, #fff);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 0.3rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.message-time {
+  font-size: 0.7rem;
+  opacity: 0.7;
+  text-align: right;
+  margin-top: 0.2rem;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  padding: 2rem;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+}
+
+.empty-state p {
+  margin: 0.5rem 0;
+  max-width: 500px;
+}
+
+.empty-state ul {
+  text-align: left;
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.empty-state li {
+  margin: 0.5rem 0;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.8));
+}
+
+.chatbot-input {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--glass-bg, rgba(255, 255, 255, 0.03));
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chatbot-input input {
+  flex: 1;
+  background: var(--input-bg, rgba(255, 255, 255, 0.1));
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+  padding: 0.8rem 1.2rem;
+  color: var(--text-color, #fff);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.chatbot-input input:focus {
+  border-color: var(--primary-color, #6366f1);
+}
+
+.chatbot-input input::placeholder {
+  color: var(--text-secondary, rgba(255, 255, 255, 0.5));
+}
+
+.send-button {
+  background: var(--primary-color, #6366f1);
+  color: white;
+  border: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.send-button:hover {
+  background: var(--primary-dark, #4f46e5);
+  transform: translateY(-2px);
+}
+
+.send-button:disabled {
+  background: var(--disabled-bg, rgba(255, 255, 255, 0.1));
+  color: var(--disabled-color, rgba(255, 255, 255, 0.3));
+  cursor: not-allowed;
+  transform: none;
+}
+
+.chatbot-disclaimer {
+  padding: 0.8rem;
+  background: var(--disclaimer-bg, rgba(0, 0, 0, 0.2));
+  font-size: 0.75rem;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.chatbot-disclaimer p {
+  margin: 0.2rem 0;
+}
+
+/* Typing indicator */
+.message.typing .message-content {
+  padding: 1rem;
+  min-width: 60px;
+}
+
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 10px;
+}
+
+.typing-indicator span {
+  display: block;
+  width: 8px;
+  height: 8px;
+  background: var(--text-secondary, rgba(255, 255, 255, 0.6));
+  border-radius: 50%;
+  animation: typingBounce 1.4s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typingBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Theme variables for easy color scheme modifications */
+:root {
+  --primary-color: #6366f1;
+  --primary-dark: #4f46e5;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --message-bg: rgba(255, 255, 255, 0.05);
+  --user-message-bg: rgba(99, 102, 241, 0.15);
+  --bot-message-bg: rgba(255, 255, 255, 0.1);
+  --input-bg: rgba(255, 255, 255, 0.1);
+  --text-color: #fff;
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  --disclaimer-bg: rgba(0, 0, 0, 0.2);
+  --scrollbar-thumb: rgba(255, 255, 255, 0.3);
+  --avatar-bg: rgba(255, 255, 255, 0.1);
+  --disabled-bg: rgba(255, 255, 255, 0.1);
+  --disabled-color: rgba(255, 255, 255, 0.3);
+}
+
+/* PDF/Print specific styles */
+@media print {
+  .mental-health-chatbot {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+    page-break-inside: avoid;
+  }
+  
+  .chatbot-header {
+    background: #f0f0f0 !important;
+    color: #333 !important;
+    padding: 15px !important;
+  }
+  
+  .chatbot-messages {
+    overflow: visible !important;
+  }
+  
+  .message-content {
+    background: #f9f9f9 !important;
+    color: #333 !important;
+    border: 1px solid #ddd !important;
+    page-break-inside: avoid;
+  }
+  
+  .message.user .message-content {
+    background: #e6e8ff !important;
+  }
+  
+  .message.bot .message-content {
+    background: #f0f0f0 !important;
+  }
+  
+  .message-text {
+    color: #333 !important;
+  }
+  
+  .message-time {
+    color: #777 !important;
+  }
+  
+  .chatbot-input,
+  .send-button {
+    display: none !important;
+  }
+  
+  .chatbot-disclaimer {
+    background: #f0f0f0 !important;
+    color: #666 !important;
+    border-top: 1px solid #ddd !important;
+  }
+  
+  .message-avatar {
+    background: #eee !important;
+    border: 1px solid #ddd !important;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --glass-bg: rgba(30, 30, 30, 0.8);
+    --primary-color: #6366f1;
+    --primary-dark: #4f46e5;
+  }
+}
+
+/* Improved mobile responsiveness */
+@media (max-width: 768px) {
+  .mental-health-chatbot {
+    height: 500px;
+    max-height: 80vh;
+    width: 100%;
+    border-radius: 12px;
+  }
+  
+  .message {
+    max-width: 90%;
+  }
+  
+  .chatbot-header h3 {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .chatbot-messages {
+    padding: 0.8rem;
+    gap: 0.8rem;
+  }
+  
+  .message-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+  
+  .message-content {
+    padding: 0.7rem 0.9rem;
+  }
+  
+  .message-text {
+    font-size: 0.9rem;
+  }
+} 

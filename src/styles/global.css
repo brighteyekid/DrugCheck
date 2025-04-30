@@ -197,3 +197,37 @@ body {
     font-size: 2rem;
   }
 }
+
+/* Add styling for the page container to handle all the pages properly */
+.page-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  margin-top: 70px; /* Adjust for fixed navbar height */
+}
+
+/* Make sure MentalHealthChatbot, MedicineAlternativeFinder, and HealthInsightGenerator 
+   components display properly as full pages */
+.mental-health-chatbot,
+.alt-finder-container,
+.health-insight-generator {
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+  height: auto;
+  min-height: 600px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .page-container {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-container {
+    padding: 0.5rem;
+    margin-top: 60px;
+  }
+}
